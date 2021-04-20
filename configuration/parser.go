@@ -23,6 +23,10 @@ func ParseFeeds(file io.Reader) (*Feeds, error) {
 	dec.KnownFields(true)
 	f := &Feeds{}
 	err := dec.Decode(f)
+	if err != nil {
+		return nil, err
+	}
+	err = ValidateFeeds(f)
 	return f, err
 }
 
