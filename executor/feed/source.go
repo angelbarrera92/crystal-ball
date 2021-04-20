@@ -11,7 +11,7 @@ import (
 	"strings"
 )
 
-type Parser func([]byte, configuration.Parser) (int64, error)
+type Parser func([]byte, configuration.Parser) (float64, error)
 
 var (
 	parsers = map[string]Parser{
@@ -25,7 +25,7 @@ var (
 	ErrInvalidEndValue = errors.New("invalid end value")
 )
 
-func ExecuteSource(source configuration.Source, arguments map[string]string) (int64, error) {
+func ExecuteSource(source configuration.Source, arguments map[string]string) (float64, error) {
 	source.URL = configuration.ExpandVariables(source.URL, arguments)
 	req, err := http.NewRequest(strings.ToUpper(source.Method), source.URL, bytes.NewReader([]byte{}))
 	if err != nil {
@@ -49,11 +49,11 @@ func ExecuteSource(source configuration.Source, arguments map[string]string) (in
 	return ExecuteParser(respBody, source.Parser)
 }
 
-func ExecuteParser(data []byte, parser configuration.Parser) (int64, error) {
+func ExecuteParser(data []byte, parser configuration.Parser) (float64, error) {
 	return parsers[parser.Type](data, parser)
 }
 
-func jsonParser(data []byte, parser configuration.Parser) (int64, error) {
+func jsonParser(data []byte, parser configuration.Parser) (float64, error) {
 	v := map[string]interface{}{}
 	err := json.Unmarshal(data, &v)
 	if err != nil {
@@ -91,9 +91,9 @@ func jsonParser(data []byte, parser configuration.Parser) (int64, error) {
 			return 0, ErrUnexpectedValue
 		}
 	}
-	result, ok := current.(int)
+	result, ok := current.(float64)
 	if !ok {
 		return 0, ErrInvalidEndValue
 	}
-	return int64(result), nil
+	return result, nil
 }
