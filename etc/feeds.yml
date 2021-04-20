@@ -1,22 +1,25 @@
 sources:
-  api:
-    url: "https://api.thing/api/call?coin=${coin}&base=${base}"
+  coingecko:
+    url: "https://api.coingecko.com/api/v3/simple/price?ids=${coin}&vs_currencies=${base}"
     arguments:
       - "base"
       - "coin"
     method: get
-    headers:
-      X-API-Key: API-Key
     parser:
       type: json
-      path: "[0][${coin}][${base}]"
+      path: "[${coin}][${base}]"
 feeds:
-  bnbusd:
-    name: "BNB/USD"
+  testfeed:
+    name: "BTC,ETH/USD"
     aggregation:
       method: average
       sources:
-        - source: api
+        # These sources don't make sense, they are just an example to test aggregation
+        - source: coingecko
           arguments:
-            base: "USD"
-            coin: "BNB"
+            base: "usd"
+            coin: "ethereum"
+        - source: coingecko
+          arguments:
+            base: "usd"
+            coin: "bitcoin"

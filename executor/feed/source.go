@@ -46,6 +46,7 @@ func ExecuteSource(source configuration.Source, arguments map[string]string) (fl
 		return 0, err
 	}
 	_ = resp.Body.Close()
+	source.Parser.Path = configuration.ExpandVariables(source.Parser.Path, arguments)
 	return ExecuteParser(respBody, source.Parser)
 }
 
@@ -66,13 +67,13 @@ func jsonParser(data []byte, parser configuration.Parser) (float64, error) {
 	var current interface{}
 	current = v
 	for i, element := range split {
-		if i == len(split)-2 {
+		if i == len(split)-1 {
 			// last element in split is guaranteed to be empty
 			break
 		}
-		switch current.(type) {
+		switch v := current.(type) {
 		case map[string]interface{}:
-			value, ok := current.(map[string]interface{})[element]
+			value, ok := v[element]
 			if !ok {
 				return 0, ErrNoSuchKey
 			}
@@ -82,17 +83,27 @@ func jsonParser(data []byte, parser configuration.Parser) (float64, error) {
 			if err != nil {
 				return 0, ErrInvalidIndex
 			}
-			el := current.([]interface{})
-			if int(value) >= len(el) {
+			if int(value) < 0 {
 				return 0, ErrIndexOutOfRange
 			}
-			current = el[value]
+			if int(value) >= len(v) {
+				return 0, ErrIndexOutOfRange
+			}
+			current = v[value]
 		default:
 			return 0, ErrUnexpectedValue
 		}
 	}
-	result, ok := current.(float64)
-	if !ok {
+	result := 0.0
+	switch v := current.(type) {
+	case int64:
+		result = float64(v)
+	case float32:
+		result = float64(v)
+	case float64:
+		// should always be float64, but anything might happen!
+		result = v
+	default:
 		return 0, ErrInvalidEndValue
 	}
 	return result, nil
