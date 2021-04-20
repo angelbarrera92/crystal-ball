@@ -45,6 +45,7 @@ func ExecuteSource(source configuration.Source, arguments map[string]string) (in
 	if err != nil {
 		return 0, err
 	}
+	_ = resp.Body.Close()
 	return ExecuteParser(respBody, source.Parser)
 }
 
