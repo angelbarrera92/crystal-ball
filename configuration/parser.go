@@ -2,8 +2,10 @@ package configuration
 
 import (
 	"errors"
+	"fmt"
 	"gopkg.in/yaml.v3"
 	"io"
+	"strings"
 )
 
 var (
@@ -68,4 +70,11 @@ func ValidateFeeds(feeds *Feeds) error {
 		}
 	}
 	return nil
+}
+
+func ExpandVariables(value string, variables map[string]string) string {
+	for k, v := range variables {
+		value = strings.ReplaceAll(value, fmt.Sprintf("${%s}", k), v)
+	}
+	return value
 }
