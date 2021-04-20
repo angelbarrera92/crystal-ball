@@ -1,0 +1,22 @@
+sources:
+  api:
+    url: "https://api.thing/api/call?coin=${coin}&base=${base}"
+    arguments:
+      - "base"
+      - "coin"
+    method: get
+    headers:
+      X-API-Key: API-Key
+    parser:
+      type: json
+      path: "[0][${coin}][${base}]"
+feeds:
+  bnbusd:
+    name: "BNB/USD"
+    aggregation:
+      method: average
+      sources:
+        - source: api
+          arguments:
+            base: "USD"
+            coin: "BNB"
