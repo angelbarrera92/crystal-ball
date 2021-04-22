@@ -11,7 +11,7 @@ type Requests struct {
 	// Timeout contains parsed RawTimeout
 	Timeout time.Duration `yaml:"-"`
 	// DataFilter contains configuration for random data prevention filter
-	DataFilter DataFilter `yaml:"data_filter"`
+	//DataFilter DataFilter `yaml:"data_filter"`
 }
 
 // Filter describes URL filter

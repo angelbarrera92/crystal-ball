@@ -1,8 +1,8 @@
 timeout: "5s"
-data_filter:
-  only_numbers: true
-  samples: 2
-  delay: "10ms"
+#data_filter:
+#  only_numbers: true
+#  samples: 2
+#  delay: "10ms"
 filter:
   mode: whitelist
   domains:

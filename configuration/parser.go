@@ -19,10 +19,9 @@ func ParseRequests(file io.Reader) (*Requests, error) {
 	if err != nil {
 		return nil, err
 	}
-	r.DataFilter.Delay, err = time.ParseDuration(r.DataFilter.RawDelay)
-	if err != nil {
-		return nil, err
-	}
-	// TODO: validate requests
+	//r.DataFilter.Delay, err = time.ParseDuration(r.DataFilter.RawDelay)
+	//if err != nil {
+	//	return nil, err
+	//}
 	return r, nil
 }
