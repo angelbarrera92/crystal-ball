@@ -19,6 +19,7 @@ import (
 	"math/big"
 	"net/http"
 	"strconv"
+	"time"
 )
 
 var (
@@ -139,6 +140,43 @@ func executeRequest(url, query string) (string, error) {
 	return "", errors.New("unknown query provided")
 }
 
+func sleepUntil(t time.Time) {
+	time.Sleep(time.Until(t))
+}
+
+func (n *Node) execute(event *contracts.IOrakuruCoreRequested, executionTime time.Time, fulfillmentTIme time.Time) {
+	sleepUntil(executionTime)
+	log.Trace().Str("id", hexutil.Encode(event.RequestId[:])).Msg("executing request")
+	allowed, err := n.Requests.Filter.ValidateURL(event.DataSource)
+	if err != nil {
+		log.Warn().Err(err).Caller().Msg("url validation failed, possibly an invalid request - ignoring")
+		return
+	}
+	if !allowed {
+		log.Warn().Msg("request violates security policy - ignoring")
+		return
+	}
+	resp, err := executeRequest(event.DataSource, event.Selector)
+	if err != nil {
+		log.Warn().Err(err).Caller().Msg("request execution failed")
+		return
+	}
+	log.Trace().Str("result", resp).Msg("request executed successfully")
+	sleepUntil(fulfillmentTIme)
+	log.Trace().Str("id", hexutil.Encode(event.RequestId[:])).Msg("submitting response")
+	k, err := bind.NewKeyedTransactorWithChainID(n.Web3.PrivateKey, n.ChainID)
+	if err != nil {
+		log.Error().Err(err).Caller().Msg("cannot create keyed transactor")
+		return
+	}
+	tx, err := n.Core.SubmitResult(k, event.RequestId, resp)
+	if err != nil {
+		log.Error().Err(err).Caller().Msg("cannot submit transaction to the network")
+		return
+	}
+	log.Info().Str("id", hexutil.Encode(event.RequestId[:])).Str("tx", tx.Hash().String()).Msg("request fulfilled")
+}
+
 func (n *Node) RunRequestExecutor() {
 	sink := make(chan *contracts.IOrakuruCoreRequested, 25)
 
@@ -150,30 +188,11 @@ func (n *Node) RunRequestExecutor() {
 	log.Info().Msg("subscribed for new requests")
 
 	for event := range sink {
-		log.Trace().Str("id", hexutil.Encode(event.RequestId[:])).Msg("new event received")
-		allowed, err := n.Requests.Filter.ValidateURL(event.DataSource)
-		if err != nil {
-			log.Warn().Err(err).Caller().Msg("url validation failed, possibly an invalid request - ignoring")
-			continue
-		}
-		if !allowed {
-			log.Warn().Msg("request violates security policy - ignoring")
-			continue
-		}
-		resp, err := executeRequest(event.DataSource, event.Selector)
-		if err != nil {
-			log.Warn().Err(err).Caller().Msg("request execution failed")
-			continue
-		}
-		k, err := bind.NewKeyedTransactorWithChainID(n.Web3.PrivateKey, n.ChainID)
-		if err != nil {
-			log.Error().Err(err).Caller().Msg("cannot create keyed transactor")
-			continue
-		}
-		tx, err := n.Core.SubmitResult(k, event.RequestId, resp)
-		if err != nil {
-			log.Error().Err(err).Caller().Msg("cannot submit transaction to the network")
-		}
-		log.Info().Str("id", hexutil.Encode(event.RequestId[:])).Str("tx", tx.Hash().String()).Msg("request fulfilled")
+		// Copy event to pass it into a goroutine
+		event := event
+		log.Trace().Str("id", hexutil.Encode(event.RequestId[:])).Msg("new request received")
+		executionTime := time.Unix(event.ExecutionTimestamp.Int64(), 0)
+		fulfillmentTime := time.Unix(event.FulfillmentTimestamp.Int64(), 0)
+		go n.execute(event, executionTime, fulfillmentTime)
 	}
 }
