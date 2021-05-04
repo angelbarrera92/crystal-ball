@@ -161,9 +161,7 @@ func (n *Node) execute(event *contracts.IOrakuruCoreRequested, executionTime tim
 		log.Warn().Err(err).Caller().Msg("request execution failed")
 		return
 	}
-	log.Trace().Str("result", resp).Msg("request executed successfully")
-	sleepUntil(fulfillmentTIme)
-	log.Trace().Str("id", hexutil.Encode(event.RequestId[:])).Msg("submitting response")
+	log.Trace().Str("id", hexutil.Encode(event.RequestId[:])).Str("result", resp).Msg("request executed successfully")
 	k, err := bind.NewKeyedTransactorWithChainID(n.Web3.PrivateKey, n.ChainID)
 	if err != nil {
 		log.Error().Err(err).Caller().Msg("cannot create keyed transactor")
@@ -175,6 +173,8 @@ func (n *Node) execute(event *contracts.IOrakuruCoreRequested, executionTime tim
 		return
 	}
 	log.Info().Str("id", hexutil.Encode(event.RequestId[:])).Str("tx", tx.Hash().String()).Msg("request fulfilled")
+	sleepUntil(fulfillmentTIme)
+	// TODO: call fulfill request
 }
 
 func (n *Node) RunRequestExecutor() {
