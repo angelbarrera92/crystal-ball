@@ -7,6 +7,26 @@ interface IOrakuruCore {
         Median
     }
 
+    struct Response {
+        bytes32 id;
+        bytes32 requestId;
+        bytes result;
+        address submittedBy;
+        uint256 submittedAt;
+    }
+
+    struct Request {
+        bytes32 id;
+        string dataSource;
+        string selector;
+        address callbackAddr;
+        uint256 executionTimestamp;
+        bool isFulfilled;
+        Response[] responses;
+    }
+
+    function requests(bytes32) external view returns (Request memory);
+
     event Requested(
         bytes32 indexed requestId,
         string dataSource,
