@@ -23,6 +23,10 @@ func OpenConnection(url string) (*Conn, error) {
 	return c, err
 }
 
+func (c *Conn) Close() error {
+	return c.db.Close()
+}
+
 func (c *Conn) CreateSchema() error {
 	_, err := c.db.Exec("CREATE TABLE IF NOT EXISTS requests (request_id BLOB UNIQUE, data_source TEXT, selector TEXT, execution_timestamp DATETIME, fulfillment_timestamp DATETIME)")
 	if err != nil {
