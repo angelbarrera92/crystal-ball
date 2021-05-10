@@ -3,7 +3,6 @@ package main
 import (
 	"bytes"
 	"context"
-	"database/sql"
 	"encoding/json"
 	"errors"
 	"github.com/antchfx/xmlquery"
@@ -73,13 +72,6 @@ func (n *Node) Start() error {
 
 func (n *Node) Run() {
 	go n.RunRequestExecutor()
-	go n.RunFeedUpdater()
-}
-
-func (n *Node) RunFeedUpdater() {
-	// TODO: get next round time
-	// TODO: get data from sources
-	// TODO: execute sources
 }
 
 func executeRequest(url, query string) (string, error) {
@@ -147,7 +139,7 @@ func sleepUntil(t time.Time) {
 	time.Sleep(time.Until(t))
 }
 
-func (n *Node) execute(event *contracts.IOrakuruCoreRequested, executionTime time.Time, fulfillmentTime time.Time) {
+func (n *Node) execute(event *contracts.IOrakuruCoreRequested, executionTime time.Time) {
 	sleepUntil(executionTime)
 	log.Trace().Str("id", hexutil.Encode(event.RequestId[:])).Msg("executing request")
 	allowed, err := n.Requests.Filter.ValidateURL(event.DataSource)
@@ -210,54 +202,34 @@ func (n *Node) collectEvents(startBlock int64) ([]*contracts.IOrakuruCoreRequest
 	return out, nil
 }
 
-func pushEvents(events []*contracts.IOrakuruCoreRequested, out chan<- *contracts.IOrakuruCoreRequested) {
+func (n *Node) pushEvents(events [][32]byte, out chan<- *contracts.IOrakuruCoreRequested) {
 	for _, event := range events {
-		out <- event
+		req, err := n.Core.Requests(nil, event)
+		if err != nil {
+			log.Error().Err(err).Caller().Msg("cannot retrieve event from contract")
+			return
+		}
+		out <- &contracts.IOrakuruCoreRequested{
+			RequestId:          event,
+			DataSource:         req.DataSource,
+			Selector:           req.Selector,
+			ExecutionTimestamp: req.ExecutionTimestamp,
+		}
 	}
 }
 
 func (n *Node) RunRequestExecutor() {
 	log.Trace().Msg("reloading past events")
-	requests, err := n.DB.GetRequests()
+
+	requests, err := n.Core.GetPendingRequests(nil)
 	if err != nil {
-		log.Error().Err(err).Caller().Msg("could not load events from the database")
-	} else {
-		for _, req := range requests {
-			if req.FulfillmentTimestamp.Before(time.Now()) {
-				reqID := [32]byte{}
-				copy(reqID[:], req.RequestID)
-				go n.execute(&contracts.IOrakuruCoreRequested{
-					RequestId:  reqID,
-					DataSource: req.DataSource,
-					Selector:   req.Selector,
-				}, req.ExecutionTimestamp, req.FulfillmentTimestamp)
-			} else {
-				err = n.DB.FulfillRequest(req.RequestID)
-				if err != nil {
-					log.Error().Err(err).Str("id", hexutil.Encode(req.RequestID)).Caller().Msg("could not delete outdated event from database")
-				}
-			}
-		}
+		log.Error().Err(err).Caller().Msg("cannot get pending requests")
 	}
+
+	sink := make(chan *contracts.IOrakuruCoreRequested, len(requests)+100)
+	go n.pushEvents(requests, sink)
+
 	log.Trace().Msg("past events were reloaded")
-
-	sink := make(chan *contracts.IOrakuruCoreRequested, 1000)
-
-	lastBlock, err := n.DB.GetInt("last_block")
-	switch {
-	case errors.Is(err, sql.ErrNoRows):
-		// TODO: we probably should collect all pending events and execute them
-	case err != nil:
-		log.Error().Err(err).Msg("cannot read last processed block")
-		// TODO: should handle this somehow as well
-	default:
-		events, err := n.collectEvents(lastBlock)
-		if err != nil {
-			log.Error().Err(err).Caller().Int64("start_block", lastBlock).Msg("could not rewind events")
-		} else {
-			go pushEvents(events, sink)
-		}
-	}
 
 	// TODO: maybe we should unsubscribe when node exits
 	_, err = n.Core.WatchRequested(nil, sink, nil, nil)
@@ -269,32 +241,15 @@ func (n *Node) RunRequestExecutor() {
 	for event := range sink {
 		// Copy event to pass it into a goroutine
 		event := event
-		if event.Raw.BlockNumber > uint64(lastBlock) {
-			lastBlock = int64(event.Raw.BlockNumber)
-			err = n.DB.SetInt("last_block", lastBlock)
-			if err != nil {
-				log.Error().Err(err).Caller().Msg("could not store latest block in database")
-			}
-		}
 
 		log.Trace().Str("id", hexutil.Encode(event.RequestId[:])).Msg("new request received")
 		executionTime := time.Unix(event.ExecutionTimestamp.Int64(), 0)
-		fulfillmentTime := time.Unix(event.FulfillmentTimestamp.Int64(), 0)
-		if fulfillmentTime.After(time.Now()) {
+		// FIXME: this time might change on mainnet
+		if executionTime.Add(1 * time.Minute).After(time.Now()) {
 			// Event is expired, skip it
 			continue
 		}
-		request := &database.Request{
-			RequestID:            event.RequestId[:],
-			DataSource:           event.DataSource,
-			Selector:             event.Selector,
-			ExecutionTimestamp:   executionTime,
-			FulfillmentTimestamp: fulfillmentTime,
-		}
-		err = n.DB.AddRequest(request)
-		if err != nil {
-			log.Error().Err(err).Str("id", hexutil.Encode(event.RequestId[:])).Caller().Msg("could not insert request into database")
-		}
-		go n.execute(event, executionTime, fulfillmentTime)
+
+		go n.execute(event, executionTime)
 	}
 }

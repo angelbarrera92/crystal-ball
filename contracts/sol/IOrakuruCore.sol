@@ -2,9 +2,37 @@
 pragma solidity >=0.8.0;
 
 interface IOrakuruCore {
-    enum Type {
-        MostFrequent,
-        Median
+    enum Type {MostFrequent, Median, Average}
+
+    event Requested(
+        bytes32 indexed requestId,
+        string dataSource,
+        string selector,
+        address indexed callbackAddr,
+        Type aggrType,
+        uint8 precision,
+        uint256 executionTimestamp
+    );
+
+    event Submitted(
+        bytes32 requestId,
+        string submittedResult,
+        bytes parsedResult,
+        address oracle
+    );
+    event Fulfilled(bytes32 indexed requestId, bytes result);
+    event Canceled(bytes32 indexed requestId);
+
+    struct Request {
+        bytes32 id;
+        string dataSource;
+        string selector;
+        address callbackAddr;
+        uint256 executionTimestamp;
+        bool isFulfilled;
+        Response[] responses;
+        Type aggrType;
+        uint8 precision;
     }
 
     struct Response {
@@ -15,29 +43,39 @@ interface IOrakuruCore {
         uint256 submittedAt;
     }
 
-    struct Request {
-        bytes32 id;
-        string dataSource;
-        string selector;
-        address callbackAddr;
-        uint256 executionTimestamp;
-        bool isFulfilled;
-        Response[] responses;
-    }
-
-    function requests(bytes32) external view returns (Request memory);
-
-    event Requested(
-        bytes32 indexed requestId,
-        string dataSource,
-        string selector,
-        address indexed callbackAddr,
-        uint256 executionTimestamp,
-        uint256 fulfillmentTimestamp,
-        Type aggrType
-    );
-
-    event Canceled(bytes32 indexed requestId);
+    function makeRequest(
+        string calldata _dataSource,
+        string calldata _selector,
+        address _calldataAddr,
+        Type _aggrType,
+        uint8 _precision,
+        uint256 _executionTimestamp
+    ) external returns (bytes32);
 
     function submitResult(bytes32 _requestId, string memory _result) external;
+
+    function fulfillRequest(bytes32 _requestId) external;
+
+    function getPendingRequests() external view returns (bytes32[] memory);
+
+    function cancelRequest(bytes32 _requestId) external returns (bool);
+
+    function getResponses(bytes32 _requestId)
+    external
+    view
+    returns (Response[] memory);
+
+    function getResultsBytes(bytes32 _requestId)
+    external
+    view
+    returns (bytes[] memory);
+
+    function getResultsUint(bytes32 _requestId)
+    external
+    view
+    returns (uint256[] memory);
+
+    function getNonceFor(address _addr) external view returns (uint256);
+
+    function requests(bytes32 id) external view returns (Request memory);
 }
