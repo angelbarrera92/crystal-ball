@@ -81,7 +81,8 @@ func main() {
 	}
 	err = node.Start()
 	if err != nil {
-		log.Fatal().Err(err).Caller().Msg("failed to start node")
+		log.Error().Err(err).Caller().Msg("failed to start node")
+		return
 	}
 	sig := make(chan os.Signal, 1)
 	signal.Notify(sig, syscall.SIGINT, syscall.SIGTERM)
