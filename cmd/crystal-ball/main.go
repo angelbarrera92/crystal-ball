@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/orakurudata/crystal-ball/cmd/crystal-ball/monitoring"
 	"github.com/orakurudata/crystal-ball/configuration"
 	"github.com/orakurudata/crystal-ball/database"
 	"github.com/rs/zerolog"
@@ -33,9 +34,11 @@ func main() {
 	configDirectory := getenv("CB_CONFIG_DIR", "etc/")
 	loadLogLevel(getenv("CB_LOG_LEVEL", "info"))
 	prettyLogging := getenv("CB_PRETTY_LOG", "true")
+	prometheusHost := getenv("MONITORING_HOST", ":9000")
 	if prettyLogging == "true" {
 		log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stdout})
 	}
+	go monitoring.StartMonitoring(prometheusHost)
 
 	feedsFile, err := os.Open(path.Join(configDirectory, "feeds.yml"))
 	if err != nil {

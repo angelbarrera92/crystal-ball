@@ -12,10 +12,12 @@ import (
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/oliveagle/jsonpath"
+	"github.com/orakurudata/crystal-ball/cmd/crystal-ball/monitoring"
 	"github.com/orakurudata/crystal-ball/configuration"
 	"github.com/orakurudata/crystal-ball/contracts"
 	"github.com/orakurudata/crystal-ball/database"
 	"github.com/rs/zerolog/log"
+	"github.com/shopspring/decimal"
 	"io"
 	"math/big"
 	"net/http"
@@ -72,6 +74,7 @@ func (n *Node) Start() error {
 
 func (n *Node) Run() {
 	go n.RunRequestExecutor()
+	go n.updateMonitoringBalance()
 }
 
 func executeRequest(url, query string) (string, error) {
@@ -139,12 +142,32 @@ func sleepUntil(t time.Time) {
 	time.Sleep(time.Until(t))
 }
 
+func (n *Node) updateMonitoringBalance() {
+	ticker := time.Tick(5 * time.Minute)
+	for range ticker {
+		balance, err := n.Client.BalanceAt(context.Background(), crypto.PubkeyToAddress(n.Web3.PrivateKey.PublicKey), nil)
+		if err != nil {
+			log.Error().Err(err).Msg("could not update balance")
+			continue
+		}
+		dec := decimal.NewFromBigInt(balance, -18)
+		bal, _ := dec.Float64()
+		monitoring.AccountBalanceGauge.Set(bal)
+	}
+}
+
 func (n *Node) execute(event *contracts.IOrakuruCoreRequested, executionTime time.Time) {
+	monitoring.QueueGauge.Inc()
+	defer func() {
+		monitoring.QueueGauge.Dec()
+		monitoring.ExecutedJobsCounter.Inc()
+	}()
 	sleepUntil(executionTime)
 	log.Trace().Str("id", hexutil.Encode(event.RequestId[:])).Msg("executing request")
 	allowed, err := n.Requests.Filter.ValidateURL(event.DataSource)
 	if err != nil {
 		log.Warn().Err(err).Caller().Msg("url validation failed, possibly an invalid request - ignoring")
+		monitoring.FailedJobsCounter.Inc()
 		return
 	}
 	if !allowed {
@@ -154,24 +177,23 @@ func (n *Node) execute(event *contracts.IOrakuruCoreRequested, executionTime tim
 	resp, err := executeRequest(event.DataSource, event.Selector)
 	if err != nil {
 		log.Warn().Err(err).Caller().Msg("request execution failed")
+		monitoring.FailedJobsCounter.Inc()
 		return
 	}
 	log.Trace().Str("id", hexutil.Encode(event.RequestId[:])).Str("result", resp).Msg("request executed successfully")
 	k, err := bind.NewKeyedTransactorWithChainID(n.Web3.PrivateKey, n.ChainID)
 	if err != nil {
 		log.Error().Err(err).Caller().Msg("cannot create keyed transactor")
+		monitoring.FailedJobsCounter.Inc()
 		return
 	}
 	tx, err := n.Core.SubmitResult(k, event.RequestId, resp)
 	if err != nil {
 		log.Error().Err(err).Caller().Msg("cannot submit transaction to the network")
+		monitoring.FailedJobsCounter.Inc()
 		return
 	}
 	log.Info().Str("id", hexutil.Encode(event.RequestId[:])).Str("tx", tx.Hash().String()).Msg("request fulfilled")
-	err = n.DB.FulfillRequest(event.RequestId[:])
-	if err != nil {
-		log.Error().Err(err).Caller().Msg("could not mark request in database as fulfilled")
-	}
 	//sleepUntil(fulfillmentTime)
 	// TODO: call fulfill request
 }
