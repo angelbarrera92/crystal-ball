@@ -30,7 +30,6 @@ interface IOrakuruCore {
         address callbackAddr;
         uint256 executionTimestamp;
         bool isFulfilled;
-        Response[] responses;
         Type aggrType;
         uint8 precision;
     }
