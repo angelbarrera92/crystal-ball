@@ -26,18 +26,6 @@ var (
 	_ = event.NewSubscription
 )
 
-// IOrakuruCoreRequest is an auto generated low-level Go binding around an user-defined struct.
-type IOrakuruCoreRequest struct {
-	Id                 [32]byte
-	DataSource         string
-	Selector           string
-	CallbackAddr       common.Address
-	ExecutionTimestamp *big.Int
-	IsFulfilled        bool
-	AggrType           uint8
-	Precision          uint8
-}
-
 // IOrakuruCoreResponse is an auto generated low-level Go binding around an user-defined struct.
 type IOrakuruCoreResponse struct {
 	Id          [32]byte
@@ -48,7 +36,7 @@ type IOrakuruCoreResponse struct {
 }
 
 // IOrakuruCoreABI is the input ABI used to generate the binding from.
-const IOrakuruCoreABI = "[{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"requestId\",\"type\":\"bytes32\"}],\"name\":\"Canceled\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"requestId\",\"type\":\"bytes32\"},{\"indexed\":false,\"internalType\":\"bytes\",\"name\":\"result\",\"type\":\"bytes\"}],\"name\":\"Fulfilled\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"requestId\",\"type\":\"bytes32\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"dataSource\",\"type\":\"string\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"selector\",\"type\":\"string\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"callbackAddr\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"enumIOrakuruCore.Type\",\"name\":\"aggrType\",\"type\":\"uint8\"},{\"indexed\":false,\"internalType\":\"uint8\",\"name\":\"precision\",\"type\":\"uint8\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"executionTimestamp\",\"type\":\"uint256\"}],\"name\":\"Requested\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"bytes32\",\"name\":\"requestId\",\"type\":\"bytes32\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"submittedResult\",\"type\":\"string\"},{\"indexed\":false,\"internalType\":\"bytes\",\"name\":\"parsedResult\",\"type\":\"bytes\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"oracle\",\"type\":\"address\"}],\"name\":\"Submitted\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"_requestId\",\"type\":\"bytes32\"}],\"name\":\"cancelRequest\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"_requestId\",\"type\":\"bytes32\"}],\"name\":\"fulfillRequest\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_addr\",\"type\":\"address\"}],\"name\":\"getNonceFor\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getPendingRequests\",\"outputs\":[{\"internalType\":\"bytes32[]\",\"name\":\"\",\"type\":\"bytes32[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"_requestId\",\"type\":\"bytes32\"}],\"name\":\"getResponses\",\"outputs\":[{\"components\":[{\"internalType\":\"bytes32\",\"name\":\"id\",\"type\":\"bytes32\"},{\"internalType\":\"bytes32\",\"name\":\"requestId\",\"type\":\"bytes32\"},{\"internalType\":\"bytes\",\"name\":\"result\",\"type\":\"bytes\"},{\"internalType\":\"address\",\"name\":\"submittedBy\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"submittedAt\",\"type\":\"uint256\"}],\"internalType\":\"structIOrakuruCore.Response[]\",\"name\":\"\",\"type\":\"tuple[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"_requestId\",\"type\":\"bytes32\"}],\"name\":\"getResultsBytes\",\"outputs\":[{\"internalType\":\"bytes[]\",\"name\":\"\",\"type\":\"bytes[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"_requestId\",\"type\":\"bytes32\"}],\"name\":\"getResultsUint\",\"outputs\":[{\"internalType\":\"uint256[]\",\"name\":\"\",\"type\":\"uint256[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"_dataSource\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"_selector\",\"type\":\"string\"},{\"internalType\":\"address\",\"name\":\"_calldataAddr\",\"type\":\"address\"},{\"internalType\":\"enumIOrakuruCore.Type\",\"name\":\"_aggrType\",\"type\":\"uint8\"},{\"internalType\":\"uint8\",\"name\":\"_precision\",\"type\":\"uint8\"},{\"internalType\":\"uint256\",\"name\":\"_executionTimestamp\",\"type\":\"uint256\"}],\"name\":\"makeRequest\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"id\",\"type\":\"bytes32\"}],\"name\":\"requests\",\"outputs\":[{\"components\":[{\"internalType\":\"bytes32\",\"name\":\"id\",\"type\":\"bytes32\"},{\"internalType\":\"string\",\"name\":\"dataSource\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"selector\",\"type\":\"string\"},{\"internalType\":\"address\",\"name\":\"callbackAddr\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"executionTimestamp\",\"type\":\"uint256\"},{\"internalType\":\"bool\",\"name\":\"isFulfilled\",\"type\":\"bool\"},{\"internalType\":\"enumIOrakuruCore.Type\",\"name\":\"aggrType\",\"type\":\"uint8\"},{\"internalType\":\"uint8\",\"name\":\"precision\",\"type\":\"uint8\"}],\"internalType\":\"structIOrakuruCore.Request\",\"name\":\"\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"_requestId\",\"type\":\"bytes32\"},{\"internalType\":\"string\",\"name\":\"_result\",\"type\":\"string\"}],\"name\":\"submitResult\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}]"
+const IOrakuruCoreABI = "[{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"requestId\",\"type\":\"bytes32\"}],\"name\":\"Canceled\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"requestId\",\"type\":\"bytes32\"},{\"indexed\":false,\"internalType\":\"bytes\",\"name\":\"result\",\"type\":\"bytes\"}],\"name\":\"Fulfilled\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"requestId\",\"type\":\"bytes32\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"dataSource\",\"type\":\"string\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"selector\",\"type\":\"string\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"callbackAddr\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"enumIOrakuruCore.Type\",\"name\":\"aggrType\",\"type\":\"uint8\"},{\"indexed\":false,\"internalType\":\"uint8\",\"name\":\"precision\",\"type\":\"uint8\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"executionTimestamp\",\"type\":\"uint256\"}],\"name\":\"Requested\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"bytes32\",\"name\":\"requestId\",\"type\":\"bytes32\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"submittedResult\",\"type\":\"string\"},{\"indexed\":false,\"internalType\":\"bytes\",\"name\":\"parsedResult\",\"type\":\"bytes\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"oracle\",\"type\":\"address\"}],\"name\":\"Submitted\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"_requestId\",\"type\":\"bytes32\"}],\"name\":\"cancelRequest\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"_requestId\",\"type\":\"bytes32\"}],\"name\":\"fulfillRequest\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_addr\",\"type\":\"address\"}],\"name\":\"getNonceFor\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getPendingRequests\",\"outputs\":[{\"internalType\":\"bytes32[]\",\"name\":\"\",\"type\":\"bytes32[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"_requestId\",\"type\":\"bytes32\"}],\"name\":\"getRequest\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"id\",\"type\":\"bytes32\"},{\"internalType\":\"string\",\"name\":\"dataSource\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"selector\",\"type\":\"string\"},{\"internalType\":\"address\",\"name\":\"callbackAddr\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"executionTimestamp\",\"type\":\"uint256\"},{\"internalType\":\"bool\",\"name\":\"isFulfilled\",\"type\":\"bool\"},{\"internalType\":\"enumIOrakuruCore.Type\",\"name\":\"aggrType\",\"type\":\"uint8\"},{\"internalType\":\"uint8\",\"name\":\"precision\",\"type\":\"uint8\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"_requestId\",\"type\":\"bytes32\"}],\"name\":\"getResponses\",\"outputs\":[{\"components\":[{\"internalType\":\"bytes32\",\"name\":\"id\",\"type\":\"bytes32\"},{\"internalType\":\"bytes32\",\"name\":\"requestId\",\"type\":\"bytes32\"},{\"internalType\":\"bytes\",\"name\":\"result\",\"type\":\"bytes\"},{\"internalType\":\"address\",\"name\":\"submittedBy\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"submittedAt\",\"type\":\"uint256\"}],\"internalType\":\"structIOrakuruCore.Response[]\",\"name\":\"\",\"type\":\"tuple[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"_requestId\",\"type\":\"bytes32\"}],\"name\":\"getResultsBytes\",\"outputs\":[{\"internalType\":\"bytes[]\",\"name\":\"\",\"type\":\"bytes[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"_requestId\",\"type\":\"bytes32\"}],\"name\":\"getResultsUint\",\"outputs\":[{\"internalType\":\"uint256[]\",\"name\":\"\",\"type\":\"uint256[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"_dataSource\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"_selector\",\"type\":\"string\"},{\"internalType\":\"address\",\"name\":\"_calldataAddr\",\"type\":\"address\"},{\"internalType\":\"enumIOrakuruCore.Type\",\"name\":\"_aggrType\",\"type\":\"uint8\"},{\"internalType\":\"uint8\",\"name\":\"_precision\",\"type\":\"uint8\"},{\"internalType\":\"uint256\",\"name\":\"_executionTimestamp\",\"type\":\"uint256\"}],\"name\":\"makeRequest\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"_requestId\",\"type\":\"bytes32\"},{\"internalType\":\"string\",\"name\":\"_result\",\"type\":\"string\"}],\"name\":\"submitResult\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}]"
 
 // IOrakuruCoreFuncSigs maps the 4-byte function signature to its string representation.
 var IOrakuruCoreFuncSigs = map[string]string{
@@ -56,11 +44,11 @@ var IOrakuruCoreFuncSigs = map[string]string{
 	"432d0137": "fulfillRequest(bytes32)",
 	"bf3125c7": "getNonceFor(address)",
 	"80a1f712": "getPendingRequests()",
+	"fb1e61ca": "getRequest(bytes32)",
 	"d4b8df22": "getResponses(bytes32)",
 	"85bf2c80": "getResultsBytes(bytes32)",
 	"cc19fa97": "getResultsUint(bytes32)",
 	"588f7a2c": "makeRequest(string,string,address,uint8,uint8,uint256)",
-	"9d866985": "requests(bytes32)",
 	"cd824ed6": "submitResult(bytes32,string)",
 }
 
@@ -268,6 +256,81 @@ func (_IOrakuruCore *IOrakuruCoreCallerSession) GetPendingRequests() ([][32]byte
 	return _IOrakuruCore.Contract.GetPendingRequests(&_IOrakuruCore.CallOpts)
 }
 
+// GetRequest is a free data retrieval call binding the contract method 0xfb1e61ca.
+//
+// Solidity: function getRequest(bytes32 _requestId) view returns(bytes32 id, string dataSource, string selector, address callbackAddr, uint256 executionTimestamp, bool isFulfilled, uint8 aggrType, uint8 precision)
+func (_IOrakuruCore *IOrakuruCoreCaller) GetRequest(opts *bind.CallOpts, _requestId [32]byte) (struct {
+	Id                 [32]byte
+	DataSource         string
+	Selector           string
+	CallbackAddr       common.Address
+	ExecutionTimestamp *big.Int
+	IsFulfilled        bool
+	AggrType           uint8
+	Precision          uint8
+}, error) {
+	var out []interface{}
+	err := _IOrakuruCore.contract.Call(opts, &out, "getRequest", _requestId)
+
+	outstruct := new(struct {
+		Id                 [32]byte
+		DataSource         string
+		Selector           string
+		CallbackAddr       common.Address
+		ExecutionTimestamp *big.Int
+		IsFulfilled        bool
+		AggrType           uint8
+		Precision          uint8
+	})
+	if err != nil {
+		return *outstruct, err
+	}
+
+	outstruct.Id = *abi.ConvertType(out[0], new([32]byte)).(*[32]byte)
+	outstruct.DataSource = *abi.ConvertType(out[1], new(string)).(*string)
+	outstruct.Selector = *abi.ConvertType(out[2], new(string)).(*string)
+	outstruct.CallbackAddr = *abi.ConvertType(out[3], new(common.Address)).(*common.Address)
+	outstruct.ExecutionTimestamp = *abi.ConvertType(out[4], new(*big.Int)).(**big.Int)
+	outstruct.IsFulfilled = *abi.ConvertType(out[5], new(bool)).(*bool)
+	outstruct.AggrType = *abi.ConvertType(out[6], new(uint8)).(*uint8)
+	outstruct.Precision = *abi.ConvertType(out[7], new(uint8)).(*uint8)
+
+	return *outstruct, err
+
+}
+
+// GetRequest is a free data retrieval call binding the contract method 0xfb1e61ca.
+//
+// Solidity: function getRequest(bytes32 _requestId) view returns(bytes32 id, string dataSource, string selector, address callbackAddr, uint256 executionTimestamp, bool isFulfilled, uint8 aggrType, uint8 precision)
+func (_IOrakuruCore *IOrakuruCoreSession) GetRequest(_requestId [32]byte) (struct {
+	Id                 [32]byte
+	DataSource         string
+	Selector           string
+	CallbackAddr       common.Address
+	ExecutionTimestamp *big.Int
+	IsFulfilled        bool
+	AggrType           uint8
+	Precision          uint8
+}, error) {
+	return _IOrakuruCore.Contract.GetRequest(&_IOrakuruCore.CallOpts, _requestId)
+}
+
+// GetRequest is a free data retrieval call binding the contract method 0xfb1e61ca.
+//
+// Solidity: function getRequest(bytes32 _requestId) view returns(bytes32 id, string dataSource, string selector, address callbackAddr, uint256 executionTimestamp, bool isFulfilled, uint8 aggrType, uint8 precision)
+func (_IOrakuruCore *IOrakuruCoreCallerSession) GetRequest(_requestId [32]byte) (struct {
+	Id                 [32]byte
+	DataSource         string
+	Selector           string
+	CallbackAddr       common.Address
+	ExecutionTimestamp *big.Int
+	IsFulfilled        bool
+	AggrType           uint8
+	Precision          uint8
+}, error) {
+	return _IOrakuruCore.Contract.GetRequest(&_IOrakuruCore.CallOpts, _requestId)
+}
+
 // GetResponses is a free data retrieval call binding the contract method 0xd4b8df22.
 //
 // Solidity: function getResponses(bytes32 _requestId) view returns((bytes32,bytes32,bytes,address,uint256)[])
@@ -359,37 +422,6 @@ func (_IOrakuruCore *IOrakuruCoreSession) GetResultsUint(_requestId [32]byte) ([
 // Solidity: function getResultsUint(bytes32 _requestId) view returns(uint256[])
 func (_IOrakuruCore *IOrakuruCoreCallerSession) GetResultsUint(_requestId [32]byte) ([]*big.Int, error) {
 	return _IOrakuruCore.Contract.GetResultsUint(&_IOrakuruCore.CallOpts, _requestId)
-}
-
-// Requests is a free data retrieval call binding the contract method 0x9d866985.
-//
-// Solidity: function requests(bytes32 id) view returns((bytes32,string,string,address,uint256,bool,uint8,uint8))
-func (_IOrakuruCore *IOrakuruCoreCaller) Requests(opts *bind.CallOpts, id [32]byte) (IOrakuruCoreRequest, error) {
-	var out []interface{}
-	err := _IOrakuruCore.contract.Call(opts, &out, "requests", id)
-
-	if err != nil {
-		return *new(IOrakuruCoreRequest), err
-	}
-
-	out0 := *abi.ConvertType(out[0], new(IOrakuruCoreRequest)).(*IOrakuruCoreRequest)
-
-	return out0, err
-
-}
-
-// Requests is a free data retrieval call binding the contract method 0x9d866985.
-//
-// Solidity: function requests(bytes32 id) view returns((bytes32,string,string,address,uint256,bool,uint8,uint8))
-func (_IOrakuruCore *IOrakuruCoreSession) Requests(id [32]byte) (IOrakuruCoreRequest, error) {
-	return _IOrakuruCore.Contract.Requests(&_IOrakuruCore.CallOpts, id)
-}
-
-// Requests is a free data retrieval call binding the contract method 0x9d866985.
-//
-// Solidity: function requests(bytes32 id) view returns((bytes32,string,string,address,uint256,bool,uint8,uint8))
-func (_IOrakuruCore *IOrakuruCoreCallerSession) Requests(id [32]byte) (IOrakuruCoreRequest, error) {
-	return _IOrakuruCore.Contract.Requests(&_IOrakuruCore.CallOpts, id)
 }
 
 // CancelRequest is a paid mutator transaction binding the contract method 0x50125546.

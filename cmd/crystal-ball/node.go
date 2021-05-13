@@ -226,7 +226,7 @@ func (n *Node) collectEvents(startBlock int64) ([]*contracts.IOrakuruCoreRequest
 
 func (n *Node) pushEvents(events [][32]byte, out chan<- *contracts.IOrakuruCoreRequested) {
 	for _, event := range events {
-		req, err := n.Core.Requests(nil, event)
+		req, err := n.Core.GetRequest(nil, event)
 		if err != nil {
 			log.Error().Err(err).Caller().Msg("cannot retrieve event from contract")
 			return

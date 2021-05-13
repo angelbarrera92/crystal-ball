@@ -76,5 +76,17 @@ interface IOrakuruCore {
 
     function getNonceFor(address _addr) external view returns (uint256);
 
-    function requests(bytes32 id) external view returns (Request memory);
+    function getRequest(bytes32 _requestId)
+    external
+    view
+    returns (
+        bytes32 id,
+        string memory dataSource,
+        string memory selector,
+        address callbackAddr,
+        uint256 executionTimestamp,
+        bool isFulfilled,
+        Type aggrType,
+        uint8 precision
+    );
 }
