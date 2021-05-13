@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"github.com/antchfx/xmlquery"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
@@ -91,6 +92,9 @@ func executeRequest(url, query string) (string, error) {
 	resp, err := c.Do(r)
 	if err != nil {
 		return "", err
+	}
+	if resp.StatusCode != http.StatusOK {
+		return "", fmt.Errorf("request execution failed, http status %d", resp.StatusCode)
 	}
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
@@ -267,9 +271,9 @@ func (n *Node) RunRequestExecutor() {
 		log.Trace().Str("id", hexutil.Encode(event.RequestId[:])).Msg("new request received")
 		executionTime := time.Unix(event.ExecutionTimestamp.Int64(), 0)
 		// FIXME: this time might change on mainnet
-		now := time.Now().UTC()
+		now := time.Now()
 		expire := executionTime.Add(1 * time.Minute)
-		if expire.After(now) {
+		if !expire.After(now) {
 			log.Trace().Str("id", hexutil.Encode(event.RequestId[:])).Time("now", now).Time("expire", expire).Msg("event is outdated")
 			// Event is expired, skip it
 			continue
