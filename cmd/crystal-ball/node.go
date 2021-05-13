@@ -267,7 +267,10 @@ func (n *Node) RunRequestExecutor() {
 		log.Trace().Str("id", hexutil.Encode(event.RequestId[:])).Msg("new request received")
 		executionTime := time.Unix(event.ExecutionTimestamp.Int64(), 0)
 		// FIXME: this time might change on mainnet
-		if executionTime.Add(1 * time.Minute).After(time.Now()) {
+		now := time.Now().UTC()
+		expire := executionTime.Add(1 * time.Minute)
+		if expire.After(now) {
+			log.Trace().Str("id", hexutil.Encode(event.RequestId[:])).Time("now", now).Time("expire", expire).Msg("event is outdated")
 			// Event is expired, skip it
 			continue
 		}
