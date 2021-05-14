@@ -19,7 +19,7 @@ Explanation of specific configuration files is provided as comments in examples 
 Recommended way of running a node is through Docker. You'll need to create configuration files first. An example command for starting node:
 
 ```shell
-$ docker run -v /absolute/path/to/etc:/go/src/app/etc \ # Path to configuration
+$ docker run -v /absolute/path/to/etc:/go/src/app/etc -d \ # Path to configuration
              -e CB_LOG_LEVEL=trace \ # Enable debug logging
              --name "crystal-ball" \ # Set name for container
              ghcr.io/orakurudata/crystal-ball:v0.1.0
