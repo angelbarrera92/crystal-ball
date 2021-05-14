@@ -16,7 +16,6 @@ import (
 	"github.com/orakurudata/crystal-ball/cmd/crystal-ball/monitoring"
 	"github.com/orakurudata/crystal-ball/configuration"
 	"github.com/orakurudata/crystal-ball/contracts"
-	"github.com/orakurudata/crystal-ball/database"
 	"github.com/rs/zerolog/log"
 	"github.com/shopspring/decimal"
 	"io"
@@ -32,10 +31,8 @@ var (
 )
 
 type Node struct {
-	Feeds    *configuration.Feeds
 	Requests *configuration.Requests
 	Web3     *configuration.Web3
-	DB       *database.Conn
 
 	ChainID     *big.Int
 	CoreAddress common.Address

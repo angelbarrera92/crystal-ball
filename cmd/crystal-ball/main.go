@@ -3,7 +3,6 @@ package main
 import (
 	"github.com/orakurudata/crystal-ball/cmd/crystal-ball/monitoring"
 	"github.com/orakurudata/crystal-ball/configuration"
-	"github.com/orakurudata/crystal-ball/database"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"os"
@@ -40,16 +39,6 @@ func main() {
 	}
 	go monitoring.StartMonitoring(prometheusHost)
 
-	feedsFile, err := os.Open(path.Join(configDirectory, "feeds.yml"))
-	if err != nil {
-		log.Fatal().Err(err).Caller().Msg("failed to open feeds configuration")
-	}
-	feedsConfig, err := configuration.ParseFeeds(feedsFile)
-	if err != nil {
-		log.Fatal().Err(err).Caller().Msg("failed to parse feeds configuration")
-	}
-	_ = feedsFile.Close()
-
 	requestsFile, err := os.Open(path.Join(configDirectory, "requests.yml"))
 	if err != nil {
 		log.Fatal().Err(err).Caller().Msg("failed to open requests configuration")
@@ -70,17 +59,9 @@ func main() {
 	}
 	_ = web3File.Close()
 
-	db, err := database.OpenConnection("file:" + path.Join(configDirectory, "db.sqlite3") + "?_journal=WAL")
-	if err != nil {
-		log.Fatal().Err(err).Caller().Msg("failed to open database")
-	}
-	defer db.Close()
-
 	node := Node{
-		Feeds:    feedsConfig,
 		Requests: requestsConfig,
 		Web3:     web3Config,
-		DB:       db,
 	}
 	err = node.Start()
 	if err != nil {
