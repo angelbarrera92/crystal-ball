@@ -1,6 +1,22 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.8.0;
 
+interface IAddressRegistry {
+    function getOrakuruCoreAddr() external view returns (address);
+
+    function getStakingAddr() external view returns (address);
+
+    function getOrkTokenAddr() external view returns (address);
+}
+
+interface IStaking {
+    function isRegisteredOracle(address _oracle) external view returns (bool);
+
+    function registeredOraclesNum() external view returns (uint256);
+
+    function getThresholdNum() external view returns (uint256);
+}
+
 interface IOrakuruCore {
     enum Type {MostFrequent, Median, Average}
 
@@ -89,4 +105,6 @@ interface IOrakuruCore {
         Type aggrType,
         uint8 precision
     );
+
+    function addressRegistry() external view returns (IAddressRegistry);
 }

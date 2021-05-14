@@ -35,11 +35,257 @@ type IOrakuruCoreResponse struct {
 	SubmittedAt *big.Int
 }
 
+// IAddressRegistryABI is the input ABI used to generate the binding from.
+const IAddressRegistryABI = "[{\"inputs\":[],\"name\":\"getOrakuruCoreAddr\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getOrkTokenAddr\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getStakingAddr\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"}]"
+
+// IAddressRegistryFuncSigs maps the 4-byte function signature to its string representation.
+var IAddressRegistryFuncSigs = map[string]string{
+	"703d8997": "getOrakuruCoreAddr()",
+	"cc566de9": "getOrkTokenAddr()",
+	"37b1d6bc": "getStakingAddr()",
+}
+
+// IAddressRegistry is an auto generated Go binding around an Ethereum contract.
+type IAddressRegistry struct {
+	IAddressRegistryCaller     // Read-only binding to the contract
+	IAddressRegistryTransactor // Write-only binding to the contract
+	IAddressRegistryFilterer   // Log filterer for contract events
+}
+
+// IAddressRegistryCaller is an auto generated read-only Go binding around an Ethereum contract.
+type IAddressRegistryCaller struct {
+	contract *bind.BoundContract // Generic contract wrapper for the low level calls
+}
+
+// IAddressRegistryTransactor is an auto generated write-only Go binding around an Ethereum contract.
+type IAddressRegistryTransactor struct {
+	contract *bind.BoundContract // Generic contract wrapper for the low level calls
+}
+
+// IAddressRegistryFilterer is an auto generated log filtering Go binding around an Ethereum contract events.
+type IAddressRegistryFilterer struct {
+	contract *bind.BoundContract // Generic contract wrapper for the low level calls
+}
+
+// IAddressRegistrySession is an auto generated Go binding around an Ethereum contract,
+// with pre-set call and transact options.
+type IAddressRegistrySession struct {
+	Contract     *IAddressRegistry // Generic contract binding to set the session for
+	CallOpts     bind.CallOpts     // Call options to use throughout this session
+	TransactOpts bind.TransactOpts // Transaction auth options to use throughout this session
+}
+
+// IAddressRegistryCallerSession is an auto generated read-only Go binding around an Ethereum contract,
+// with pre-set call options.
+type IAddressRegistryCallerSession struct {
+	Contract *IAddressRegistryCaller // Generic contract caller binding to set the session for
+	CallOpts bind.CallOpts           // Call options to use throughout this session
+}
+
+// IAddressRegistryTransactorSession is an auto generated write-only Go binding around an Ethereum contract,
+// with pre-set transact options.
+type IAddressRegistryTransactorSession struct {
+	Contract     *IAddressRegistryTransactor // Generic contract transactor binding to set the session for
+	TransactOpts bind.TransactOpts           // Transaction auth options to use throughout this session
+}
+
+// IAddressRegistryRaw is an auto generated low-level Go binding around an Ethereum contract.
+type IAddressRegistryRaw struct {
+	Contract *IAddressRegistry // Generic contract binding to access the raw methods on
+}
+
+// IAddressRegistryCallerRaw is an auto generated low-level read-only Go binding around an Ethereum contract.
+type IAddressRegistryCallerRaw struct {
+	Contract *IAddressRegistryCaller // Generic read-only contract binding to access the raw methods on
+}
+
+// IAddressRegistryTransactorRaw is an auto generated low-level write-only Go binding around an Ethereum contract.
+type IAddressRegistryTransactorRaw struct {
+	Contract *IAddressRegistryTransactor // Generic write-only contract binding to access the raw methods on
+}
+
+// NewIAddressRegistry creates a new instance of IAddressRegistry, bound to a specific deployed contract.
+func NewIAddressRegistry(address common.Address, backend bind.ContractBackend) (*IAddressRegistry, error) {
+	contract, err := bindIAddressRegistry(address, backend, backend, backend)
+	if err != nil {
+		return nil, err
+	}
+	return &IAddressRegistry{IAddressRegistryCaller: IAddressRegistryCaller{contract: contract}, IAddressRegistryTransactor: IAddressRegistryTransactor{contract: contract}, IAddressRegistryFilterer: IAddressRegistryFilterer{contract: contract}}, nil
+}
+
+// NewIAddressRegistryCaller creates a new read-only instance of IAddressRegistry, bound to a specific deployed contract.
+func NewIAddressRegistryCaller(address common.Address, caller bind.ContractCaller) (*IAddressRegistryCaller, error) {
+	contract, err := bindIAddressRegistry(address, caller, nil, nil)
+	if err != nil {
+		return nil, err
+	}
+	return &IAddressRegistryCaller{contract: contract}, nil
+}
+
+// NewIAddressRegistryTransactor creates a new write-only instance of IAddressRegistry, bound to a specific deployed contract.
+func NewIAddressRegistryTransactor(address common.Address, transactor bind.ContractTransactor) (*IAddressRegistryTransactor, error) {
+	contract, err := bindIAddressRegistry(address, nil, transactor, nil)
+	if err != nil {
+		return nil, err
+	}
+	return &IAddressRegistryTransactor{contract: contract}, nil
+}
+
+// NewIAddressRegistryFilterer creates a new log filterer instance of IAddressRegistry, bound to a specific deployed contract.
+func NewIAddressRegistryFilterer(address common.Address, filterer bind.ContractFilterer) (*IAddressRegistryFilterer, error) {
+	contract, err := bindIAddressRegistry(address, nil, nil, filterer)
+	if err != nil {
+		return nil, err
+	}
+	return &IAddressRegistryFilterer{contract: contract}, nil
+}
+
+// bindIAddressRegistry binds a generic wrapper to an already deployed contract.
+func bindIAddressRegistry(address common.Address, caller bind.ContractCaller, transactor bind.ContractTransactor, filterer bind.ContractFilterer) (*bind.BoundContract, error) {
+	parsed, err := abi.JSON(strings.NewReader(IAddressRegistryABI))
+	if err != nil {
+		return nil, err
+	}
+	return bind.NewBoundContract(address, parsed, caller, transactor, filterer), nil
+}
+
+// Call invokes the (constant) contract method with params as input values and
+// sets the output to result. The result type might be a single field for simple
+// returns, a slice of interfaces for anonymous returns and a struct for named
+// returns.
+func (_IAddressRegistry *IAddressRegistryRaw) Call(opts *bind.CallOpts, result *[]interface{}, method string, params ...interface{}) error {
+	return _IAddressRegistry.Contract.IAddressRegistryCaller.contract.Call(opts, result, method, params...)
+}
+
+// Transfer initiates a plain transaction to move funds to the contract, calling
+// its default method if one is available.
+func (_IAddressRegistry *IAddressRegistryRaw) Transfer(opts *bind.TransactOpts) (*types.Transaction, error) {
+	return _IAddressRegistry.Contract.IAddressRegistryTransactor.contract.Transfer(opts)
+}
+
+// Transact invokes the (paid) contract method with params as input values.
+func (_IAddressRegistry *IAddressRegistryRaw) Transact(opts *bind.TransactOpts, method string, params ...interface{}) (*types.Transaction, error) {
+	return _IAddressRegistry.Contract.IAddressRegistryTransactor.contract.Transact(opts, method, params...)
+}
+
+// Call invokes the (constant) contract method with params as input values and
+// sets the output to result. The result type might be a single field for simple
+// returns, a slice of interfaces for anonymous returns and a struct for named
+// returns.
+func (_IAddressRegistry *IAddressRegistryCallerRaw) Call(opts *bind.CallOpts, result *[]interface{}, method string, params ...interface{}) error {
+	return _IAddressRegistry.Contract.contract.Call(opts, result, method, params...)
+}
+
+// Transfer initiates a plain transaction to move funds to the contract, calling
+// its default method if one is available.
+func (_IAddressRegistry *IAddressRegistryTransactorRaw) Transfer(opts *bind.TransactOpts) (*types.Transaction, error) {
+	return _IAddressRegistry.Contract.contract.Transfer(opts)
+}
+
+// Transact invokes the (paid) contract method with params as input values.
+func (_IAddressRegistry *IAddressRegistryTransactorRaw) Transact(opts *bind.TransactOpts, method string, params ...interface{}) (*types.Transaction, error) {
+	return _IAddressRegistry.Contract.contract.Transact(opts, method, params...)
+}
+
+// GetOrakuruCoreAddr is a free data retrieval call binding the contract method 0x703d8997.
+//
+// Solidity: function getOrakuruCoreAddr() view returns(address)
+func (_IAddressRegistry *IAddressRegistryCaller) GetOrakuruCoreAddr(opts *bind.CallOpts) (common.Address, error) {
+	var out []interface{}
+	err := _IAddressRegistry.contract.Call(opts, &out, "getOrakuruCoreAddr")
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
+}
+
+// GetOrakuruCoreAddr is a free data retrieval call binding the contract method 0x703d8997.
+//
+// Solidity: function getOrakuruCoreAddr() view returns(address)
+func (_IAddressRegistry *IAddressRegistrySession) GetOrakuruCoreAddr() (common.Address, error) {
+	return _IAddressRegistry.Contract.GetOrakuruCoreAddr(&_IAddressRegistry.CallOpts)
+}
+
+// GetOrakuruCoreAddr is a free data retrieval call binding the contract method 0x703d8997.
+//
+// Solidity: function getOrakuruCoreAddr() view returns(address)
+func (_IAddressRegistry *IAddressRegistryCallerSession) GetOrakuruCoreAddr() (common.Address, error) {
+	return _IAddressRegistry.Contract.GetOrakuruCoreAddr(&_IAddressRegistry.CallOpts)
+}
+
+// GetOrkTokenAddr is a free data retrieval call binding the contract method 0xcc566de9.
+//
+// Solidity: function getOrkTokenAddr() view returns(address)
+func (_IAddressRegistry *IAddressRegistryCaller) GetOrkTokenAddr(opts *bind.CallOpts) (common.Address, error) {
+	var out []interface{}
+	err := _IAddressRegistry.contract.Call(opts, &out, "getOrkTokenAddr")
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
+}
+
+// GetOrkTokenAddr is a free data retrieval call binding the contract method 0xcc566de9.
+//
+// Solidity: function getOrkTokenAddr() view returns(address)
+func (_IAddressRegistry *IAddressRegistrySession) GetOrkTokenAddr() (common.Address, error) {
+	return _IAddressRegistry.Contract.GetOrkTokenAddr(&_IAddressRegistry.CallOpts)
+}
+
+// GetOrkTokenAddr is a free data retrieval call binding the contract method 0xcc566de9.
+//
+// Solidity: function getOrkTokenAddr() view returns(address)
+func (_IAddressRegistry *IAddressRegistryCallerSession) GetOrkTokenAddr() (common.Address, error) {
+	return _IAddressRegistry.Contract.GetOrkTokenAddr(&_IAddressRegistry.CallOpts)
+}
+
+// GetStakingAddr is a free data retrieval call binding the contract method 0x37b1d6bc.
+//
+// Solidity: function getStakingAddr() view returns(address)
+func (_IAddressRegistry *IAddressRegistryCaller) GetStakingAddr(opts *bind.CallOpts) (common.Address, error) {
+	var out []interface{}
+	err := _IAddressRegistry.contract.Call(opts, &out, "getStakingAddr")
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
+}
+
+// GetStakingAddr is a free data retrieval call binding the contract method 0x37b1d6bc.
+//
+// Solidity: function getStakingAddr() view returns(address)
+func (_IAddressRegistry *IAddressRegistrySession) GetStakingAddr() (common.Address, error) {
+	return _IAddressRegistry.Contract.GetStakingAddr(&_IAddressRegistry.CallOpts)
+}
+
+// GetStakingAddr is a free data retrieval call binding the contract method 0x37b1d6bc.
+//
+// Solidity: function getStakingAddr() view returns(address)
+func (_IAddressRegistry *IAddressRegistryCallerSession) GetStakingAddr() (common.Address, error) {
+	return _IAddressRegistry.Contract.GetStakingAddr(&_IAddressRegistry.CallOpts)
+}
+
 // IOrakuruCoreABI is the input ABI used to generate the binding from.
-const IOrakuruCoreABI = "[{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"requestId\",\"type\":\"bytes32\"}],\"name\":\"Canceled\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"requestId\",\"type\":\"bytes32\"},{\"indexed\":false,\"internalType\":\"bytes\",\"name\":\"result\",\"type\":\"bytes\"}],\"name\":\"Fulfilled\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"requestId\",\"type\":\"bytes32\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"dataSource\",\"type\":\"string\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"selector\",\"type\":\"string\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"callbackAddr\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"enumIOrakuruCore.Type\",\"name\":\"aggrType\",\"type\":\"uint8\"},{\"indexed\":false,\"internalType\":\"uint8\",\"name\":\"precision\",\"type\":\"uint8\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"executionTimestamp\",\"type\":\"uint256\"}],\"name\":\"Requested\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"bytes32\",\"name\":\"requestId\",\"type\":\"bytes32\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"submittedResult\",\"type\":\"string\"},{\"indexed\":false,\"internalType\":\"bytes\",\"name\":\"parsedResult\",\"type\":\"bytes\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"oracle\",\"type\":\"address\"}],\"name\":\"Submitted\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"_requestId\",\"type\":\"bytes32\"}],\"name\":\"cancelRequest\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"_requestId\",\"type\":\"bytes32\"}],\"name\":\"fulfillRequest\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_addr\",\"type\":\"address\"}],\"name\":\"getNonceFor\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getPendingRequests\",\"outputs\":[{\"internalType\":\"bytes32[]\",\"name\":\"\",\"type\":\"bytes32[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"_requestId\",\"type\":\"bytes32\"}],\"name\":\"getRequest\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"id\",\"type\":\"bytes32\"},{\"internalType\":\"string\",\"name\":\"dataSource\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"selector\",\"type\":\"string\"},{\"internalType\":\"address\",\"name\":\"callbackAddr\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"executionTimestamp\",\"type\":\"uint256\"},{\"internalType\":\"bool\",\"name\":\"isFulfilled\",\"type\":\"bool\"},{\"internalType\":\"enumIOrakuruCore.Type\",\"name\":\"aggrType\",\"type\":\"uint8\"},{\"internalType\":\"uint8\",\"name\":\"precision\",\"type\":\"uint8\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"_requestId\",\"type\":\"bytes32\"}],\"name\":\"getResponses\",\"outputs\":[{\"components\":[{\"internalType\":\"bytes32\",\"name\":\"id\",\"type\":\"bytes32\"},{\"internalType\":\"bytes32\",\"name\":\"requestId\",\"type\":\"bytes32\"},{\"internalType\":\"bytes\",\"name\":\"result\",\"type\":\"bytes\"},{\"internalType\":\"address\",\"name\":\"submittedBy\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"submittedAt\",\"type\":\"uint256\"}],\"internalType\":\"structIOrakuruCore.Response[]\",\"name\":\"\",\"type\":\"tuple[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"_requestId\",\"type\":\"bytes32\"}],\"name\":\"getResultsBytes\",\"outputs\":[{\"internalType\":\"bytes[]\",\"name\":\"\",\"type\":\"bytes[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"_requestId\",\"type\":\"bytes32\"}],\"name\":\"getResultsUint\",\"outputs\":[{\"internalType\":\"uint256[]\",\"name\":\"\",\"type\":\"uint256[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"_dataSource\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"_selector\",\"type\":\"string\"},{\"internalType\":\"address\",\"name\":\"_calldataAddr\",\"type\":\"address\"},{\"internalType\":\"enumIOrakuruCore.Type\",\"name\":\"_aggrType\",\"type\":\"uint8\"},{\"internalType\":\"uint8\",\"name\":\"_precision\",\"type\":\"uint8\"},{\"internalType\":\"uint256\",\"name\":\"_executionTimestamp\",\"type\":\"uint256\"}],\"name\":\"makeRequest\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"_requestId\",\"type\":\"bytes32\"},{\"internalType\":\"string\",\"name\":\"_result\",\"type\":\"string\"}],\"name\":\"submitResult\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}]"
+const IOrakuruCoreABI = "[{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"requestId\",\"type\":\"bytes32\"}],\"name\":\"Canceled\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"requestId\",\"type\":\"bytes32\"},{\"indexed\":false,\"internalType\":\"bytes\",\"name\":\"result\",\"type\":\"bytes\"}],\"name\":\"Fulfilled\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"requestId\",\"type\":\"bytes32\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"dataSource\",\"type\":\"string\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"selector\",\"type\":\"string\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"callbackAddr\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"enumIOrakuruCore.Type\",\"name\":\"aggrType\",\"type\":\"uint8\"},{\"indexed\":false,\"internalType\":\"uint8\",\"name\":\"precision\",\"type\":\"uint8\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"executionTimestamp\",\"type\":\"uint256\"}],\"name\":\"Requested\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"bytes32\",\"name\":\"requestId\",\"type\":\"bytes32\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"submittedResult\",\"type\":\"string\"},{\"indexed\":false,\"internalType\":\"bytes\",\"name\":\"parsedResult\",\"type\":\"bytes\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"oracle\",\"type\":\"address\"}],\"name\":\"Submitted\",\"type\":\"event\"},{\"inputs\":[],\"name\":\"addressRegistry\",\"outputs\":[{\"internalType\":\"contractIAddressRegistry\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"_requestId\",\"type\":\"bytes32\"}],\"name\":\"cancelRequest\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"_requestId\",\"type\":\"bytes32\"}],\"name\":\"fulfillRequest\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_addr\",\"type\":\"address\"}],\"name\":\"getNonceFor\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getPendingRequests\",\"outputs\":[{\"internalType\":\"bytes32[]\",\"name\":\"\",\"type\":\"bytes32[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"_requestId\",\"type\":\"bytes32\"}],\"name\":\"getRequest\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"id\",\"type\":\"bytes32\"},{\"internalType\":\"string\",\"name\":\"dataSource\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"selector\",\"type\":\"string\"},{\"internalType\":\"address\",\"name\":\"callbackAddr\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"executionTimestamp\",\"type\":\"uint256\"},{\"internalType\":\"bool\",\"name\":\"isFulfilled\",\"type\":\"bool\"},{\"internalType\":\"enumIOrakuruCore.Type\",\"name\":\"aggrType\",\"type\":\"uint8\"},{\"internalType\":\"uint8\",\"name\":\"precision\",\"type\":\"uint8\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"_requestId\",\"type\":\"bytes32\"}],\"name\":\"getResponses\",\"outputs\":[{\"components\":[{\"internalType\":\"bytes32\",\"name\":\"id\",\"type\":\"bytes32\"},{\"internalType\":\"bytes32\",\"name\":\"requestId\",\"type\":\"bytes32\"},{\"internalType\":\"bytes\",\"name\":\"result\",\"type\":\"bytes\"},{\"internalType\":\"address\",\"name\":\"submittedBy\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"submittedAt\",\"type\":\"uint256\"}],\"internalType\":\"structIOrakuruCore.Response[]\",\"name\":\"\",\"type\":\"tuple[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"_requestId\",\"type\":\"bytes32\"}],\"name\":\"getResultsBytes\",\"outputs\":[{\"internalType\":\"bytes[]\",\"name\":\"\",\"type\":\"bytes[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"_requestId\",\"type\":\"bytes32\"}],\"name\":\"getResultsUint\",\"outputs\":[{\"internalType\":\"uint256[]\",\"name\":\"\",\"type\":\"uint256[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"_dataSource\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"_selector\",\"type\":\"string\"},{\"internalType\":\"address\",\"name\":\"_calldataAddr\",\"type\":\"address\"},{\"internalType\":\"enumIOrakuruCore.Type\",\"name\":\"_aggrType\",\"type\":\"uint8\"},{\"internalType\":\"uint8\",\"name\":\"_precision\",\"type\":\"uint8\"},{\"internalType\":\"uint256\",\"name\":\"_executionTimestamp\",\"type\":\"uint256\"}],\"name\":\"makeRequest\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"_requestId\",\"type\":\"bytes32\"},{\"internalType\":\"string\",\"name\":\"_result\",\"type\":\"string\"}],\"name\":\"submitResult\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}]"
 
 // IOrakuruCoreFuncSigs maps the 4-byte function signature to its string representation.
 var IOrakuruCoreFuncSigs = map[string]string{
+	"f3ad65f4": "addressRegistry()",
 	"50125546": "cancelRequest(bytes32)",
 	"432d0137": "fulfillRequest(bytes32)",
 	"bf3125c7": "getNonceFor(address)",
@@ -192,6 +438,37 @@ func (_IOrakuruCore *IOrakuruCoreTransactorRaw) Transfer(opts *bind.TransactOpts
 // Transact invokes the (paid) contract method with params as input values.
 func (_IOrakuruCore *IOrakuruCoreTransactorRaw) Transact(opts *bind.TransactOpts, method string, params ...interface{}) (*types.Transaction, error) {
 	return _IOrakuruCore.Contract.contract.Transact(opts, method, params...)
+}
+
+// AddressRegistry is a free data retrieval call binding the contract method 0xf3ad65f4.
+//
+// Solidity: function addressRegistry() view returns(address)
+func (_IOrakuruCore *IOrakuruCoreCaller) AddressRegistry(opts *bind.CallOpts) (common.Address, error) {
+	var out []interface{}
+	err := _IOrakuruCore.contract.Call(opts, &out, "addressRegistry")
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
+}
+
+// AddressRegistry is a free data retrieval call binding the contract method 0xf3ad65f4.
+//
+// Solidity: function addressRegistry() view returns(address)
+func (_IOrakuruCore *IOrakuruCoreSession) AddressRegistry() (common.Address, error) {
+	return _IOrakuruCore.Contract.AddressRegistry(&_IOrakuruCore.CallOpts)
+}
+
+// AddressRegistry is a free data retrieval call binding the contract method 0xf3ad65f4.
+//
+// Solidity: function addressRegistry() view returns(address)
+func (_IOrakuruCore *IOrakuruCoreCallerSession) AddressRegistry() (common.Address, error) {
+	return _IOrakuruCore.Contract.AddressRegistry(&_IOrakuruCore.CallOpts)
 }
 
 // GetNonceFor is a free data retrieval call binding the contract method 0xbf3125c7.
@@ -1092,4 +1369,249 @@ func (_IOrakuruCore *IOrakuruCoreFilterer) ParseSubmitted(log types.Log) (*IOrak
 	}
 	event.Raw = log
 	return event, nil
+}
+
+// IStakingABI is the input ABI used to generate the binding from.
+const IStakingABI = "[{\"inputs\":[],\"name\":\"getThresholdNum\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_oracle\",\"type\":\"address\"}],\"name\":\"isRegisteredOracle\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"registeredOraclesNum\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"}]"
+
+// IStakingFuncSigs maps the 4-byte function signature to its string representation.
+var IStakingFuncSigs = map[string]string{
+	"76540c5b": "getThresholdNum()",
+	"2911eb21": "isRegisteredOracle(address)",
+	"a4219ee4": "registeredOraclesNum()",
+}
+
+// IStaking is an auto generated Go binding around an Ethereum contract.
+type IStaking struct {
+	IStakingCaller     // Read-only binding to the contract
+	IStakingTransactor // Write-only binding to the contract
+	IStakingFilterer   // Log filterer for contract events
+}
+
+// IStakingCaller is an auto generated read-only Go binding around an Ethereum contract.
+type IStakingCaller struct {
+	contract *bind.BoundContract // Generic contract wrapper for the low level calls
+}
+
+// IStakingTransactor is an auto generated write-only Go binding around an Ethereum contract.
+type IStakingTransactor struct {
+	contract *bind.BoundContract // Generic contract wrapper for the low level calls
+}
+
+// IStakingFilterer is an auto generated log filtering Go binding around an Ethereum contract events.
+type IStakingFilterer struct {
+	contract *bind.BoundContract // Generic contract wrapper for the low level calls
+}
+
+// IStakingSession is an auto generated Go binding around an Ethereum contract,
+// with pre-set call and transact options.
+type IStakingSession struct {
+	Contract     *IStaking         // Generic contract binding to set the session for
+	CallOpts     bind.CallOpts     // Call options to use throughout this session
+	TransactOpts bind.TransactOpts // Transaction auth options to use throughout this session
+}
+
+// IStakingCallerSession is an auto generated read-only Go binding around an Ethereum contract,
+// with pre-set call options.
+type IStakingCallerSession struct {
+	Contract *IStakingCaller // Generic contract caller binding to set the session for
+	CallOpts bind.CallOpts   // Call options to use throughout this session
+}
+
+// IStakingTransactorSession is an auto generated write-only Go binding around an Ethereum contract,
+// with pre-set transact options.
+type IStakingTransactorSession struct {
+	Contract     *IStakingTransactor // Generic contract transactor binding to set the session for
+	TransactOpts bind.TransactOpts   // Transaction auth options to use throughout this session
+}
+
+// IStakingRaw is an auto generated low-level Go binding around an Ethereum contract.
+type IStakingRaw struct {
+	Contract *IStaking // Generic contract binding to access the raw methods on
+}
+
+// IStakingCallerRaw is an auto generated low-level read-only Go binding around an Ethereum contract.
+type IStakingCallerRaw struct {
+	Contract *IStakingCaller // Generic read-only contract binding to access the raw methods on
+}
+
+// IStakingTransactorRaw is an auto generated low-level write-only Go binding around an Ethereum contract.
+type IStakingTransactorRaw struct {
+	Contract *IStakingTransactor // Generic write-only contract binding to access the raw methods on
+}
+
+// NewIStaking creates a new instance of IStaking, bound to a specific deployed contract.
+func NewIStaking(address common.Address, backend bind.ContractBackend) (*IStaking, error) {
+	contract, err := bindIStaking(address, backend, backend, backend)
+	if err != nil {
+		return nil, err
+	}
+	return &IStaking{IStakingCaller: IStakingCaller{contract: contract}, IStakingTransactor: IStakingTransactor{contract: contract}, IStakingFilterer: IStakingFilterer{contract: contract}}, nil
+}
+
+// NewIStakingCaller creates a new read-only instance of IStaking, bound to a specific deployed contract.
+func NewIStakingCaller(address common.Address, caller bind.ContractCaller) (*IStakingCaller, error) {
+	contract, err := bindIStaking(address, caller, nil, nil)
+	if err != nil {
+		return nil, err
+	}
+	return &IStakingCaller{contract: contract}, nil
+}
+
+// NewIStakingTransactor creates a new write-only instance of IStaking, bound to a specific deployed contract.
+func NewIStakingTransactor(address common.Address, transactor bind.ContractTransactor) (*IStakingTransactor, error) {
+	contract, err := bindIStaking(address, nil, transactor, nil)
+	if err != nil {
+		return nil, err
+	}
+	return &IStakingTransactor{contract: contract}, nil
+}
+
+// NewIStakingFilterer creates a new log filterer instance of IStaking, bound to a specific deployed contract.
+func NewIStakingFilterer(address common.Address, filterer bind.ContractFilterer) (*IStakingFilterer, error) {
+	contract, err := bindIStaking(address, nil, nil, filterer)
+	if err != nil {
+		return nil, err
+	}
+	return &IStakingFilterer{contract: contract}, nil
+}
+
+// bindIStaking binds a generic wrapper to an already deployed contract.
+func bindIStaking(address common.Address, caller bind.ContractCaller, transactor bind.ContractTransactor, filterer bind.ContractFilterer) (*bind.BoundContract, error) {
+	parsed, err := abi.JSON(strings.NewReader(IStakingABI))
+	if err != nil {
+		return nil, err
+	}
+	return bind.NewBoundContract(address, parsed, caller, transactor, filterer), nil
+}
+
+// Call invokes the (constant) contract method with params as input values and
+// sets the output to result. The result type might be a single field for simple
+// returns, a slice of interfaces for anonymous returns and a struct for named
+// returns.
+func (_IStaking *IStakingRaw) Call(opts *bind.CallOpts, result *[]interface{}, method string, params ...interface{}) error {
+	return _IStaking.Contract.IStakingCaller.contract.Call(opts, result, method, params...)
+}
+
+// Transfer initiates a plain transaction to move funds to the contract, calling
+// its default method if one is available.
+func (_IStaking *IStakingRaw) Transfer(opts *bind.TransactOpts) (*types.Transaction, error) {
+	return _IStaking.Contract.IStakingTransactor.contract.Transfer(opts)
+}
+
+// Transact invokes the (paid) contract method with params as input values.
+func (_IStaking *IStakingRaw) Transact(opts *bind.TransactOpts, method string, params ...interface{}) (*types.Transaction, error) {
+	return _IStaking.Contract.IStakingTransactor.contract.Transact(opts, method, params...)
+}
+
+// Call invokes the (constant) contract method with params as input values and
+// sets the output to result. The result type might be a single field for simple
+// returns, a slice of interfaces for anonymous returns and a struct for named
+// returns.
+func (_IStaking *IStakingCallerRaw) Call(opts *bind.CallOpts, result *[]interface{}, method string, params ...interface{}) error {
+	return _IStaking.Contract.contract.Call(opts, result, method, params...)
+}
+
+// Transfer initiates a plain transaction to move funds to the contract, calling
+// its default method if one is available.
+func (_IStaking *IStakingTransactorRaw) Transfer(opts *bind.TransactOpts) (*types.Transaction, error) {
+	return _IStaking.Contract.contract.Transfer(opts)
+}
+
+// Transact invokes the (paid) contract method with params as input values.
+func (_IStaking *IStakingTransactorRaw) Transact(opts *bind.TransactOpts, method string, params ...interface{}) (*types.Transaction, error) {
+	return _IStaking.Contract.contract.Transact(opts, method, params...)
+}
+
+// GetThresholdNum is a free data retrieval call binding the contract method 0x76540c5b.
+//
+// Solidity: function getThresholdNum() view returns(uint256)
+func (_IStaking *IStakingCaller) GetThresholdNum(opts *bind.CallOpts) (*big.Int, error) {
+	var out []interface{}
+	err := _IStaking.contract.Call(opts, &out, "getThresholdNum")
+
+	if err != nil {
+		return *new(*big.Int), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+
+	return out0, err
+
+}
+
+// GetThresholdNum is a free data retrieval call binding the contract method 0x76540c5b.
+//
+// Solidity: function getThresholdNum() view returns(uint256)
+func (_IStaking *IStakingSession) GetThresholdNum() (*big.Int, error) {
+	return _IStaking.Contract.GetThresholdNum(&_IStaking.CallOpts)
+}
+
+// GetThresholdNum is a free data retrieval call binding the contract method 0x76540c5b.
+//
+// Solidity: function getThresholdNum() view returns(uint256)
+func (_IStaking *IStakingCallerSession) GetThresholdNum() (*big.Int, error) {
+	return _IStaking.Contract.GetThresholdNum(&_IStaking.CallOpts)
+}
+
+// IsRegisteredOracle is a free data retrieval call binding the contract method 0x2911eb21.
+//
+// Solidity: function isRegisteredOracle(address _oracle) view returns(bool)
+func (_IStaking *IStakingCaller) IsRegisteredOracle(opts *bind.CallOpts, _oracle common.Address) (bool, error) {
+	var out []interface{}
+	err := _IStaking.contract.Call(opts, &out, "isRegisteredOracle", _oracle)
+
+	if err != nil {
+		return *new(bool), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(bool)).(*bool)
+
+	return out0, err
+
+}
+
+// IsRegisteredOracle is a free data retrieval call binding the contract method 0x2911eb21.
+//
+// Solidity: function isRegisteredOracle(address _oracle) view returns(bool)
+func (_IStaking *IStakingSession) IsRegisteredOracle(_oracle common.Address) (bool, error) {
+	return _IStaking.Contract.IsRegisteredOracle(&_IStaking.CallOpts, _oracle)
+}
+
+// IsRegisteredOracle is a free data retrieval call binding the contract method 0x2911eb21.
+//
+// Solidity: function isRegisteredOracle(address _oracle) view returns(bool)
+func (_IStaking *IStakingCallerSession) IsRegisteredOracle(_oracle common.Address) (bool, error) {
+	return _IStaking.Contract.IsRegisteredOracle(&_IStaking.CallOpts, _oracle)
+}
+
+// RegisteredOraclesNum is a free data retrieval call binding the contract method 0xa4219ee4.
+//
+// Solidity: function registeredOraclesNum() view returns(uint256)
+func (_IStaking *IStakingCaller) RegisteredOraclesNum(opts *bind.CallOpts) (*big.Int, error) {
+	var out []interface{}
+	err := _IStaking.contract.Call(opts, &out, "registeredOraclesNum")
+
+	if err != nil {
+		return *new(*big.Int), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+
+	return out0, err
+
+}
+
+// RegisteredOraclesNum is a free data retrieval call binding the contract method 0xa4219ee4.
+//
+// Solidity: function registeredOraclesNum() view returns(uint256)
+func (_IStaking *IStakingSession) RegisteredOraclesNum() (*big.Int, error) {
+	return _IStaking.Contract.RegisteredOraclesNum(&_IStaking.CallOpts)
+}
+
+// RegisteredOraclesNum is a free data retrieval call binding the contract method 0xa4219ee4.
+//
+// Solidity: function registeredOraclesNum() view returns(uint256)
+func (_IStaking *IStakingCallerSession) RegisteredOraclesNum() (*big.Int, error) {
+	return _IStaking.Contract.RegisteredOraclesNum(&_IStaking.CallOpts)
 }

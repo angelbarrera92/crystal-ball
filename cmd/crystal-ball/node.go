@@ -38,6 +38,8 @@ type Node struct {
 	CoreAddress common.Address
 	Client      *ethclient.Client
 	Core        *contracts.IOrakuruCore
+	Registry    *contracts.IAddressRegistry
+	Staking     *contracts.IStaking
 }
 
 func (n *Node) Start() error {
@@ -65,6 +67,29 @@ func (n *Node) Start() error {
 	n.Core, err = contracts.NewIOrakuruCore(n.CoreAddress, n.Client)
 	if err != nil {
 		return err
+	}
+	registryAddr, err := n.Core.AddressRegistry(nil)
+	if err != nil {
+		return err
+	}
+	n.Registry, err = contracts.NewIAddressRegistry(registryAddr, c)
+	if err != nil {
+		return err
+	}
+	stakingAddr, err := n.Registry.GetStakingAddr(nil)
+	if err != nil {
+		return err
+	}
+	n.Staking, err = contracts.NewIStaking(stakingAddr, c)
+	if err != nil {
+		return err
+	}
+	oracle, err := n.Staking.IsRegisteredOracle(nil, crypto.PubkeyToAddress(n.Web3.PrivateKey.PublicKey))
+	if err != nil {
+		return err
+	}
+	if !oracle {
+		log.Error().Caller().Msg("current wallet is not a registered oracle")
 	}
 	n.Run()
 	return nil
