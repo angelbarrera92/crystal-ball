@@ -75,7 +75,7 @@ func (n *Node) Run() {
 	go n.updateMonitoringBalance()
 }
 
-func executeRequest(url, query string) (string, error) {
+func (n *Node) executeRequest(url, query string) (string, error) {
 	r, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		return "", err
@@ -86,6 +86,7 @@ func executeRequest(url, query string) (string, error) {
 		r.Header.Set("Accept", "application/xml")
 	}
 	c := &http.Client{}
+	c.Timeout = n.Requests.Timeout
 	resp, err := c.Do(r)
 	if err != nil {
 		return "", err
@@ -175,7 +176,7 @@ func (n *Node) execute(event *contracts.IOrakuruCoreRequested, executionTime tim
 		log.Warn().Msg("request violates security policy - ignoring")
 		return
 	}
-	resp, err := executeRequest(event.DataSource, event.Selector)
+	resp, err := n.executeRequest(event.DataSource, event.Selector)
 	if err != nil {
 		log.Warn().Err(err).Caller().Msg("request execution failed")
 		monitoring.FailedJobsCounter.Inc()
