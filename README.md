@@ -22,8 +22,11 @@ Recommended way of running a node is through Docker. You'll need to create confi
 $ docker run -v /absolute/path/to/etc:/go/src/app/etc -d \ # Path to configuration
              -e CB_LOG_LEVEL=trace \ # Enable debug logging
              --name "crystal-ball" \ # Set name for container
-             ghcr.io/orakurudata/crystal-ball:v0.1.0
+             ghcr.io/orakurudata/crystal-ball:v0.1.1
 ```
+
+**Notice:** before running this command, you need to create a configuration directory somewhere on your machine, copy [Web3](etc/web3.yml) and [Requests](etc/requests.yml) configuration files to that directory, and modify them (change web3 endpoint, private key). After that, replace `/absolute/path/to/etc` with an absolute path to your newly created configuration directory. 
+This step is **REQUIRED**.
 
 You can also build your version of node from scratch. You'll need to install Go 1.16 or higher, GCC, G++, linux-headers, and git.
 As of now, we officially only support Linux, but node probably will build on Windows and macOS.
