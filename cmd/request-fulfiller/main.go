@@ -17,6 +17,7 @@ import (
 	"os"
 	"path"
 	"strings"
+	"sync"
 	"time"
 )
 
@@ -25,6 +26,8 @@ var (
 	TestnetID = big.NewInt(97)
 
 	ChainID = big.NewInt(0)
+
+	FulfillMutex = sync.Mutex{}
 )
 
 func getenv(env, def string) string {
@@ -94,7 +97,9 @@ func fulfillEvent(core *contracts.IOrakuruCore, event *contracts.IOrakuruCoreReq
 		log.Error().Err(err).Msg("could not create transactor")
 		return
 	}
+	FulfillMutex.Lock()
 	tx, err := core.FulfillRequest(k, event.RequestId)
+	FulfillMutex.Unlock()
 	if err != nil {
 		log.Warn().Err(err).Caller().Msg("could not fulfill request the first time, retying in a random amount of seconds")
 		time.Sleep(time.Duration(rand.Intn(5)+2) * time.Second)
