@@ -427,23 +427,26 @@ func (n *Node) RunRequestExecutor() {
 			continue
 		}
 		backoff = 5 * time.Second
-		log.Info().Msg("subscribed for new requests")
 		n.HandlerLoop(sub, sink)
+		sub.Unsubscribe()
+		close(sink)
 	}
 }
 
 func (n *Node) HandlerLoop(sub event.Subscription, sink chan *contracts.IOrakuruCoreRequested) {
 	// As far as we I can tell, sometimes nodes drop long-term subscriptions without any notification.
 	// We'll resubscribe every 10 hours.
-	ticker := time.Tick(10 * time.Hour)
+	ticker := time.NewTicker(10 * time.Hour)
+	log.Info().Msg("subscribed for new requests")
 	for {
 		select {
 		case ev := <-sink:
 			n.ActiveRequestsMutex.Lock()
-			if _, ok := n.ActiveRequests[ev.RequestId]; ok {
+			_, ok := n.ActiveRequests[ev.RequestId]
+			n.ActiveRequestsMutex.Unlock()
+			if ok {
 				continue
 			}
-			n.ActiveRequestsMutex.Unlock()
 
 			evt := ev
 			log.Trace().Str("id", hexutil.Encode(evt.RequestId[:])).Msg("new request received")
@@ -463,11 +466,10 @@ func (n *Node) HandlerLoop(sub event.Subscription, sink chan *contracts.IOrakuru
 			go n.execute(evt, executionTime)
 		case err := <-sub.Err():
 			log.Error().Err(err).Caller().Msg("failed receiving events")
-			sub.Unsubscribe()
 			return
-		case <-ticker:
+		case <-ticker.C:
 			log.Info().Msg("performing re-subscription to keep connection durable")
-			sub.Unsubscribe()
+			ticker.Stop()
 			return
 		}
 	}
