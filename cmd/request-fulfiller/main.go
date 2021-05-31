@@ -157,17 +157,29 @@ outer:
 		}
 		go pushEvents(core, pending, sink)
 
+		requestsMutex := &sync.Mutex{}
 		for {
 			select {
 			case event := <-sink:
 				go func() {
-					if _, ok := requests[event.RequestId]; ok {
+					requestsMutex.Lock()
+					_, ok := requests[event.RequestId]
+					requestsMutex.Unlock()
+
+					if ok {
 						return
 					}
+
+					requestsMutex.Lock()
 					requests[event.RequestId] = true
+					requestsMutex.Unlock()
+
 					log.Trace().Str("id", hexutil.Encode(event.RequestId[:])).Msg("received an event")
 					fulfillEvent(core, event, web3.PrivateKey)
+
+					requestsMutex.Lock()
 					delete(requests, event.RequestId)
+					requestsMutex.Unlock()
 				}()
 			case err := <-sub.Err():
 				log.Error().Err(err).Caller().Msg("broken connection")
