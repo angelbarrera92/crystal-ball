@@ -1,8 +1,10 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"flag"
+	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/ethereum/go-ethereum/ethclient"
@@ -97,10 +99,6 @@ func main() {
 	for k := range oracles {
 		validators.RegisterValidator(k)
 	}
-	requests, err := core.FilterFulfilled(nil, nil)
-	if err != nil {
-		log.Fatal().Err(err).Caller().Msg("cannot collect fulfilled requests")
-	}
 
 	sink := make(chan *contracts.IOrakuruCoreFulfilled, 500)
 	f, err := core.WatchFulfilled(nil, sink, nil)
@@ -109,24 +107,43 @@ func main() {
 	}
 	errChan := f.Err()
 
-	for requests.Next() {
-		// Empty answer = failed
-		if len(requests.Event.Result) == 0 {
-			continue
+	latestBlock, err := client.BlockNumber(context.Background())
+	if err != nil {
+		log.Fatal().Err(err).Caller().Msg("could not get latest block")
+	}
+	for block := uint64(9121845); block <= latestBlock; block += 5001 {
+		var end *uint64
+		if block+5000 < latestBlock {
+			_end := block + 5000
+			end = &_end
+		}
+		requests, err := core.FilterFulfilled(&bind.FilterOpts{
+			Start: block,
+			End:   end,
+		}, nil)
+		if err != nil {
+			log.Fatal().Err(err).Caller().Msg("cannot collect fulfilled requests")
 		}
 
-		log.Info().Str("id", hexutil.Encode(requests.Event.RequestId[:])).Msg("processing past request")
-		resp, err := core.GetResponses(nil, requests.Event.RequestId)
-		if err != nil {
-			log.Fatal().Err(err).Caller().Msg("cannot get responses from core contract")
-		}
-		req, err := core.GetRequest(nil, requests.Event.RequestId)
-		if err != nil {
-			log.Fatal().Err(err).Caller().Msg("could not get request from core contract")
-		}
-		for _, resp := range resp {
-			elapsed := big.NewInt(0).Sub(resp.SubmittedAt, req.ExecutionTimestamp)
-			validators.AddScore(resp.SubmittedBy, Score(elapsed.Uint64()), elapsed.Uint64())
+		for requests.Next() {
+			// Empty answer = failed
+			if len(requests.Event.Result) == 0 {
+				continue
+			}
+
+			log.Info().Str("id", hexutil.Encode(requests.Event.RequestId[:])).Msg("processing past request")
+			resp, err := core.GetResponses(nil, requests.Event.RequestId)
+			if err != nil {
+				log.Fatal().Err(err).Caller().Msg("cannot get responses from core contract")
+			}
+			req, err := core.GetRequest(nil, requests.Event.RequestId)
+			if err != nil {
+				log.Fatal().Err(err).Caller().Msg("could not get request from core contract")
+			}
+			for _, resp := range resp {
+				elapsed := big.NewInt(0).Sub(resp.SubmittedAt, req.ExecutionTimestamp)
+				validators.AddScore(resp.SubmittedBy, Score(elapsed.Uint64()), elapsed.Uint64())
+			}
 		}
 	}
 
@@ -138,7 +155,7 @@ func main() {
 					continue
 				}
 
-				log.Info().Str("id", hexutil.Encode(requests.Event.RequestId[:])).Msg("processing new request")
+				log.Info().Str("id", hexutil.Encode(fulfill.RequestId[:])).Msg("processing new request")
 				resp, err := core.GetResponses(nil, fulfill.RequestId)
 				if err != nil {
 					log.Fatal().Err(err).Caller().Msg("cannot get responses from core contract")
