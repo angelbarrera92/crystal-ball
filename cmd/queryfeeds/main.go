@@ -2,12 +2,14 @@ package main
 
 import (
 	"fmt"
+	"os"
+
 	"github.com/orakurudata/crystal-ball/configuration"
 	feed2 "github.com/orakurudata/crystal-ball/executor/feed"
-	"os"
 )
 
 func main() {
+	fmt.Printf("Starting queryfeeds\n%v", configuration.Info())
 	if len(os.Args) != 2 {
 		fmt.Printf("Usage: %s <configuration file>\n", os.Args[0])
 		os.Exit(1)

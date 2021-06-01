@@ -1,0 +1,30 @@
+---
+before:
+  hooks:
+  - go get -d ./...
+builds:
+- id: crystal-ball
+  main: ./cmd/crystal-ball
+  goos:
+  - linux
+  goarch:
+  - amd64
+  targets:
+  - linux_amd64
+  ldflags:
+  - -s -w -X github.com/orakurudata/crystal-ball/configuration.version={{.Version}} -X github.com/orakurudata/crystal-ball/configuration.commit={{.Commit}} -X github.com/orakurudata/crystal-ball/configuration.date={{.Date}}
+  binary: crystal-ball
+archives:
+- id: crystal-ball
+  builds:
+  - crystal-ball
+  format: binary
+dockers:
+- dockerfile: .goreleaser.Dockerfile
+  ids:
+  - crystal-ball
+  image_templates:
+  - "ghcr.io/{{ .Env.REPOSITORY_OWNER }}/{{ .ProjectName }}:latest"
+  - "ghcr.io/{{ .Env.REPOSITORY_OWNER }}/{{ .ProjectName }}:{{ .Tag }}"
+  - "ghcr.io/{{ .Env.REPOSITORY_OWNER }}/{{ .ProjectName }}:v{{ .Major }}"
+  - "ghcr.io/{{ .Env.REPOSITORY_OWNER }}/{{ .ProjectName }}:v{{ .Major }}.{{ .Minor }}"

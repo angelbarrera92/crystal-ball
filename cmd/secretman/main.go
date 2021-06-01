@@ -4,8 +4,10 @@ import (
 	"encoding/base64"
 	"flag"
 	"fmt"
-	"github.com/orakurudata/crystal-ball/secrets"
 	"os"
+
+	"github.com/orakurudata/crystal-ball/configuration"
+	"github.com/orakurudata/crystal-ball/secrets"
 )
 
 func main() {
@@ -14,6 +16,7 @@ func main() {
 	decryptMode := flag.Bool("decrypt", false, "decrypt a message")
 	message := flag.String("message", "", "message to encrypt")
 	target := flag.String("pubkey", "", "recipient pubkey")
+	fmt.Printf("starting secretman\n%v", configuration.Info())
 	flag.Parse()
 	if !*generateMode && !*encryptMode && !*decryptMode {
 		fmt.Println("specify operation mode")

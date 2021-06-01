@@ -4,16 +4,19 @@ import (
 	"context"
 	"encoding/json"
 	"flag"
-	"github.com/ethereum/go-ethereum/accounts/abi/bind"
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/common/hexutil"
-	"github.com/ethereum/go-ethereum/ethclient"
-	"github.com/orakurudata/crystal-ball/contracts"
-	"github.com/rs/zerolog/log"
 	"math"
 	"math/big"
 	"net/http"
 	"os"
+
+	"github.com/ethereum/go-ethereum/accounts/abi/bind"
+
+	"github.com/ethereum/go-ethereum/common"
+	"github.com/ethereum/go-ethereum/common/hexutil"
+	"github.com/ethereum/go-ethereum/ethclient"
+	"github.com/orakurudata/crystal-ball/configuration"
+	"github.com/orakurudata/crystal-ball/contracts"
+	"github.com/rs/zerolog/log"
 )
 
 const (
@@ -44,6 +47,7 @@ func main() {
 	coreAddress := flag.String("core", "", "address of orakuru core")
 	web3URL := flag.String("url", "", "web3 endpoint url")
 	httpAddr := flag.String("http", "", "http bind address")
+	log.Info().Caller().Msgf("starting leaderboard\n%v", configuration.Info())
 	flag.Parse()
 
 	if *coreAddress == "" || *web3URL == "" || *httpAddr == "" {

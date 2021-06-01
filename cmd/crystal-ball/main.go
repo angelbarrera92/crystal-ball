@@ -1,15 +1,16 @@
 package main
 
 import (
-	"github.com/orakurudata/crystal-ball/cmd/crystal-ball/monitoring"
-	"github.com/orakurudata/crystal-ball/configuration"
-	"github.com/rs/zerolog"
-	"github.com/rs/zerolog/log"
 	"os"
 	"os/signal"
 	"path"
 	"strings"
 	"syscall"
+
+	"github.com/orakurudata/crystal-ball/cmd/crystal-ball/monitoring"
+	"github.com/orakurudata/crystal-ball/configuration"
+	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 )
 
 func getenv(env, def string) string {
@@ -37,6 +38,7 @@ func main() {
 	if prettyLogging == "true" {
 		log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stdout})
 	}
+	log.Info().Caller().Msgf("starting crystall-ball\n%v", configuration.Info())
 	go monitoring.StartMonitoring(prometheusHost)
 
 	requestsFile, err := os.Open(path.Join(configDirectory, "requests.yml"))

@@ -3,6 +3,13 @@ package main
 import (
 	"context"
 	"crypto/ecdsa"
+	"math/big"
+	"os"
+	"path"
+	"strings"
+	"sync"
+	"time"
+
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/hexutil"
@@ -12,12 +19,6 @@ import (
 	"github.com/orakurudata/crystal-ball/contracts"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
-	"math/big"
-	"os"
-	"path"
-	"strings"
-	"sync"
-	"time"
 )
 
 var (
@@ -53,6 +54,7 @@ func main() {
 	if prettyLogging == "true" {
 		log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stdout})
 	}
+	log.Info().Caller().Msgf("starting request-fulfiller\n%v", configuration.Info())
 
 	web3File, err := os.Open(path.Join(configDirectory, "web3.yml"))
 	if err != nil {
