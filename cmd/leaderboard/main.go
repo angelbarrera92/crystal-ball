@@ -41,6 +41,7 @@ type LeaderboardEntry struct {
 	Address      string  `json:"address"`
 	Score        uint64  `json:"score"`
 	ResponseTime float64 `json:"response_time"`
+	Responses    uint64  `json:"responses"`
 }
 
 func main() {

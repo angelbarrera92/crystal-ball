@@ -55,11 +55,12 @@ func (v *Validators) Collect() Leaderboard {
 		} else {
 			average = 0
 		}
-    
+
 		result = append(result, LeaderboardEntry{
 			Address:      k.Hex(),
 			Score:        val,
 			ResponseTime: average,
+			Responses:    v.requests[k].Uint64(),
 		})
 	}
 	sort.Slice(result, func(i, j int) bool {
