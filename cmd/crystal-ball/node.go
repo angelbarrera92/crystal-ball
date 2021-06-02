@@ -275,6 +275,9 @@ func (n *Node) execute(event *contracts.IOrakuruCoreRequested, executionTime tim
 		n.ActiveRequestsMutex.Unlock()
 	}()
 
+	if strings.HasPrefix(event.DataSource, "http:") {
+		event.DataSource = strings.Replace(event.DataSource, "http://", "https://", 1)
+	}
 	// Perform validation immediately upon receiving request
 	allowed, err := n.Requests.Filter.ValidateURL(event.DataSource)
 	if err != nil {
