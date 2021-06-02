@@ -5,6 +5,8 @@ before:
 builds:
 - id: crystal-ball
   main: ./cmd/crystal-ball
+  env:
+    - CGO_ENABLED=0
   goos:
   - linux
   goarch:
